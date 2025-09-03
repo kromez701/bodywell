@@ -39255,4 +39255,139 @@
       replaceDollarInDOM();
     });
   </script>
+
+  <script>
+    // Product configuration with prices and redirect URLs
+    const productConfig = {
+      single: {
+        price: "£29.95",
+        redirectUrl: "https://checkout.example.com/single-biochip",
+        buttonSelector: ".pf-c2884226a9ef-1260_", // Single product button
+      },
+      threePack: {
+        price: "£49.95",
+        redirectUrl: "https://checkout.example.com/3pack-biochip",
+        buttonSelector: ".pf-c2884226a9ef-1206_", // 3 pack button
+      },
+      sixPack: {
+        price: "£59.95",
+        redirectUrl: "https://checkout.example.com/6pack-biochip",
+        buttonSelector: ".pf-c2884226a9ef-1234_", // 6 pack button
+      },
+    };
+
+    // Price selectors for each product box
+    const priceSelectors = {
+      single: ".pf-c2884226a9ef-1249_", // Single product price
+      threePack: ".pf-c2884226a9ef-1195_", // 3 pack price
+      sixPack: ".pf-c2884226a9ef-1223_", // 6 pack price
+    };
+
+    // Function to update prices immediately (before page renders)
+    function updatePrices() {
+      // Update single product price
+      const singlePrice = document.querySelector(priceSelectors.single);
+      if (singlePrice) {
+        singlePrice.textContent = productConfig.single.price;
+      }
+
+      // Update 3 pack price
+      const threePackPrice = document.querySelector(priceSelectors.threePack);
+      if (threePackPrice) {
+        threePackPrice.textContent = productConfig.threePack.price;
+      }
+
+      // Update 6 pack price
+      const sixPackPrice = document.querySelector(priceSelectors.sixPack);
+      if (sixPackPrice) {
+        sixPackPrice.textContent = productConfig.sixPack.price;
+      }
+    }
+
+    // Function to setup button redirects
+    function setupButtonRedirects() {
+      // Single product button
+      const singleButton = document.querySelector(
+        productConfig.single.buttonSelector
+      );
+      if (singleButton) {
+        singleButton.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = productConfig.single.redirectUrl;
+        });
+      }
+
+      // 3 pack button
+      const threePackButton = document.querySelector(
+        productConfig.threePack.buttonSelector
+      );
+      if (threePackButton) {
+        threePackButton.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = productConfig.threePack.redirectUrl;
+        });
+      }
+
+      // 6 pack button
+      const sixPackButton = document.querySelector(
+        productConfig.sixPack.buttonSelector
+      );
+      if (sixPackButton) {
+        sixPackButton.addEventListener("click", function (e) {
+          e.preventDefault();
+          window.location.href = productConfig.sixPack.redirectUrl;
+        });
+      }
+    }
+
+    // Function to hide price elements initially to prevent flash
+    function hidePricesInitially() {
+      const style = document.createElement("style");
+      style.textContent = `
+    ${priceSelectors.single},
+    ${priceSelectors.threePack},
+    ${priceSelectors.sixPack} {
+      visibility: hidden;
+    }
+  `;
+      document.head.appendChild(style);
+
+      // Remove the style after prices are updated
+      setTimeout(() => {
+        style.remove();
+      }, 100);
+    }
+
+    // Initialize everything when DOM is ready
+    function initialize() {
+      hidePricesInitially();
+      updatePrices();
+      setupButtonRedirects();
+
+      // Make prices visible after update
+      setTimeout(() => {
+        const priceElements = document.querySelectorAll(`
+      ${priceSelectors.single},
+      ${priceSelectors.threePack},
+      ${priceSelectors.sixPack}
+    `);
+        priceElements.forEach((el) => {
+          if (el) el.style.visibility = "visible";
+        });
+      }, 50);
+    }
+
+    // Run immediately if DOM is already loaded, otherwise wait
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initialize);
+    } else {
+      initialize();
+    }
+
+    // Backup: Also run on window load to ensure everything is captured
+    window.addEventListener("load", function () {
+      updatePrices();
+      setupButtonRedirects();
+    });
+  </script>
 </html>
